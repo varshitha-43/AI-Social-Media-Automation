@@ -1,0 +1,289 @@
+{
+  "name": "My Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "18edGujLjiF7aemQKQFs4IJVscHCAHIzg_ykqGBHDdiQ",
+          "mode": "list",
+          "cachedResultName": "n8workslowautomation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18edGujLjiF7aemQKQFs4IJVscHCAHIzg_ykqGBHDdiQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18edGujLjiF7aemQKQFs4IJVscHCAHIzg_ykqGBHDdiQ/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9d0e521c-3917-4911-9162-08bf0c790f1b",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "bphN8Z5kC2e63cKn",
+          "name": "Google Sheets Trigger account 2803"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze this learning progress entry and create a professional summary:\n\nDate: {{ $json.Date }}\nTopic: {{ $json['Topic/Module'] }}\nWhat I Learned: {{ $json['What I Learned'] }}\nSkills/Tools Used: {{ $json['Skills/Tools'] }}\n\nCreate a concise, impactful summary that:\n1. Highlights the main concept mastered\n2. Emphasizes practical skills gained\n3. Shows progression in the learning journey\n4. Maintains an enthusiastic but professional tone\n\nKeep it under 100 words, focusing on achievements and growth.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        208,
+        0
+      ],
+      "id": "f971b1cb-8a32-47ab-8ed8-e947bc58ce8a",
+      "name": "summarizetable"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        208,
+        192
+      ],
+      "id": "2d3ea18d-6fd9-489f-a32f-8a3a2bad0b2e",
+      "name": "Gemini - Article Summarizer",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "bxdKvUoly5uXQ0eD",
+          "name": "Google Gemini(PaLM) Api account 7172"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Transform this learning summary into an engaging LinkedIn post: {{ $json.text }}\n\nCreate a post that:\n- Starts with a hook about today's learning achievement\n- Shares 2-3 specific insights or skills gained\n- Includes a reflection on how this knowledge applies to real-world scenarios\n- Uses relevant hashtags: #AIBootcamp #LearningJourney #GenerativeAI #TechSkills #100DaysOfCode\n- Ends with a question to engage the community\n- Length: 200-300 words\n- Professional yet authentic tone\n- Include relevant emojis for visual appeal\n\nFormat with line breaks for readability. Start directly with the post content.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        576,
+        -240
+      ],
+      "id": "b016c75b-3fc4-4036-b297-5c99bfe74959",
+      "name": "generatelinkedinpost"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        576,
+        -48
+      ],
+      "id": "51f8ba98-8f4f-4790-963f-b97a3c9cd12f",
+      "name": "Gemini - Article Summarizer1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "bxdKvUoly5uXQ0eD",
+          "name": "Google Gemini(PaLM) Api account 7172"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "person": "S1CbCep5f2",
+        "text": "={{ $json.text }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        928,
+        -240
+      ],
+      "id": "e9539eb7-2300-4996-8fca-3b0bdf97cd00",
+      "name": "Create a post",
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "xcDtdlQFz5JYnJve",
+          "name": "LinkedIn account 2038"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create a punchy X/Twitter post about this learning: {{ $json.text }}\n\nRequirements:\n- Celebrate the learning milestone enthusiastically\n- Mention 1 specific skill or tool learned\n- Keep under 280 characters\n- Include 2-3 hashtags: #AI #Learning #TechJourney\n- Add relevant emoji\n\nExample format: \"Day X: [achievement]! Learned [specific skill/tool]. [Key insight]. [Question/CTA]? #hashtags\"\n\nOutput only the tweet text.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        576,
+        224
+      ],
+      "id": "6fea772b-8134-458c-bda0-33d8e406c026",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        576,
+        432
+      ],
+      "id": "fc251413-23f1-4aab-b304-9772bb6017ef",
+      "name": "Gemini - Article Summarizer2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "bxdKvUoly5uXQ0eD",
+          "name": "Google Gemini(PaLM) Api account 7172"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.text }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [
+        928,
+        224
+      ],
+      "id": "2eb1ea67-4c32-4d9a-8850-d18ad36d07ef",
+      "name": "Create Tweet",
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "gQ4YXJgTNrH0NUVB",
+          "name": "X account 931"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "summarizetable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini - Article Summarizer": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "summarizetable",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "summarizetable": {
+      "main": [
+        [
+          {
+            "node": "generatelinkedinpost",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini - Article Summarizer1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "generatelinkedinpost",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "generatelinkedinpost": {
+      "main": [
+        [
+          {
+            "node": "Create a post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a post": {
+      "main": [
+        []
+      ]
+    },
+    "Gemini - Article Summarizer2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Create Tweet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "99e6e4e0-6fc7-46cd-a0d0-556c9a635004",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "969257b09ad2942bbaff2e2288304f4969030574d109cdeca05bf11f630884df"
+  },
+  "id": "BKygBupT3ZRRe9xr",
+  "tags": []
+}
